@@ -54,6 +54,22 @@ export default class SongCard extends React.Component {
         this.props.moveCallback(sourceId, targetId);
     }
 
+    handleMouseOver = (onmouseover) => {
+        onmouseover.preventDefault();
+        this.setState(prevState => ({
+            ...prevState,
+            isHovering: true
+        }));
+    }
+
+    handleMouseLeave = (onmouseleave) => {
+        onmouseleave.preventDefault();
+        this.setState(prevState => ({
+            ...prevState,
+            isHovering: false
+        }));
+    }
+
     getItemNum = () => {
         return this.props.id.substring("playlist-song-".length);
     }
@@ -66,10 +82,16 @@ export default class SongCard extends React.Component {
         if (this.state.draggedTo) {
             itemClass = "playlister-song-dragged-to";
         }
+
+        itemClass += " unselected-list-card"; 
+        
+        var youTubeLink = "https://www.youtube.com/watch?v=" + song.youTubeId;
+
         return (
             <div
                 id={'song-' + num}
                 className={itemClass}
+                onMouseOver={this.handleMouseOver}
                 onDragStart={this.handleDragStart}
                 onDragOver={this.handleDragOver}
                 onDragEnter={this.handleDragEnter}
@@ -77,7 +99,9 @@ export default class SongCard extends React.Component {
                 onDrop={this.handleDrop}
                 draggable="true"
             >
-                {song.title} by {song.artist}
+                <span style = {{paddingRight : "5px"}}>{num + "."}</span>
+                <a href = {youTubeLink}>{song.title} by {song.artist}</a>
+                <input className="list-card-button" type="button" value="X"></input>
             </div>
         )
     }
