@@ -131,6 +131,7 @@ body {
 }
 
 .list-card-button {
+  margin-left: auto;
   float:right;
   font-size:18pt;
 }
