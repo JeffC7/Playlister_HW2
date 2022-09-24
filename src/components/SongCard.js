@@ -70,6 +70,11 @@ export default class SongCard extends React.Component {
         }));
     }
 
+    handleDoubleClick = (ondblclick) => {
+        ondblclick.preventDefault();
+        this.props.changeEditIndex(this.getItemNum() - 1);
+    }
+
     getItemNum = () => {
         return this.props.id.substring("playlist-song-".length);
     }
@@ -77,7 +82,7 @@ export default class SongCard extends React.Component {
     render() {
         const { song } = this.props;
         let num = this.getItemNum();
-        console.log("num: " + num);
+        // console.log("num: " + num);
         let itemClass = "playlister-song";
         if (this.state.draggedTo) {
             itemClass = "playlister-song-dragged-to";
@@ -97,6 +102,7 @@ export default class SongCard extends React.Component {
                 onDragEnter={this.handleDragEnter}
                 onDragLeave={this.handleDragLeave}
                 onDrop={this.handleDrop}
+                onDoubleClick={this.handleDoubleClick}
                 draggable="true"
             >
                 <span style = {{paddingRight : "5px"}}>{num + "."}</span>

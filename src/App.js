@@ -18,6 +18,8 @@ import PlaylistCards from './components/PlaylistCards.js';
 import SidebarHeading from './components/SidebarHeading.js';
 import SidebarList from './components/SidebarList.js';
 import Statusbar from './components/Statusbar.js';
+import EditSong_Transaction from './transactions/EditSong_Transaction';
+import EditSongModal from './components/EditSongModal';
 
 class App extends React.Component {
     constructor(props) {
@@ -36,7 +38,8 @@ class App extends React.Component {
         this.state = {
             listKeyPairMarkedForDeletion : null,
             currentList : null,
-            sessionData : loadedSessionData
+            sessionData : loadedSessionData,
+            editIndex: null,
         }
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
@@ -274,6 +277,35 @@ class App extends React.Component {
         let modal = document.getElementById("delete-list-modal");
         modal.classList.remove("is-visible");
     }
+
+    showEditSongModal() {
+        let modal = document.getElementById("edit-song-modal");
+        modal.classList.add("is-visible");
+    }
+
+    hideEditSongModal = () => {
+        let modal = document.getElementById("edit-song-modal");
+        modal.classList.remove("is-visible");
+        this.setState(prevState => ({...prevState, editIndex: null}));
+    }
+
+    editIndexCallBack = (index) => {
+        this.setState(prevState => ({...prevState, editIndex: index}));
+    }
+
+    editSong = (newSong, index) => {
+        let list = this.state.currentList;
+        list.songs[index] = newSong;
+        this.setStateWithUpdatedList(list);
+    }
+
+    addEditSongTransaction = (newSong) => {
+        let oldSong = this.state.currentList.songs[this.state.editIndex];
+        let transaction = new EditSong_Transaction(this, oldSong, newSong, this.state.editIndex);
+        this.tps.addTransaction(transaction);
+        this.hideEditSongModal();
+    }
+
     render() {
         let canAddSong = this.state.currentList !== null;
         let canUndo = this.tps.hasTransactionToUndo();
@@ -304,13 +336,20 @@ class App extends React.Component {
                 />
                 <PlaylistCards
                     currentList={this.state.currentList}
-                    moveSongCallback={this.addMoveSongTransaction} />
+                    moveSongCallback={this.addMoveSongTransaction}
+                    changeEditIndex={this.editIndexCallBack} />
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteListModal
                     listKeyPair={this.state.listKeyPairMarkedForDeletion}
                     hideDeleteListModalCallback={this.hideDeleteListModal}
                     deleteListCallback={this.deleteMarkedList}
+                />
+                <EditSongModal
+                    addEditSongTransaction={this.addEditSongTransaction}
+                    index={this.state.editIndex}
+                    song={this.state.editIndex === null ? null : this.state.currentList.songs[this.state.editIndex]}
+                    hide={this.hideEditSongModal}
                 />
             </div>
         );

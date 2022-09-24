@@ -19,7 +19,7 @@ body {
 
 #root {
   background-color: var(--swatch-primary);
-  font-family: tangerine;
+  font-family: 'Tangerine';
   position: absolute;
   width: 80%;
   left: 10%;
@@ -109,7 +109,7 @@ body {
 }
 
 .list-card, .selected-list-card, .unselected-list-card {
-  font-size: 18pt;
+  font-size: 32pt;
   margin: 10px;
   padding: 20px;
   border-radius: 25px;
@@ -133,7 +133,7 @@ body {
 .list-card-button {
   margin-left: auto;
   float:right;
-  font-size:18pt;
+  font-size:24pt;
 }
 
 .playlister-button, .playlister-button-disabled {
@@ -221,7 +221,7 @@ input {
   grid-template-columns: 30% 65%;
   grid-template-rows: 33% 33% 33%;
   gap: 10px 20px;
-  font-size: 48pt;
+  font-size: 35pt;
 }
 
 span {
@@ -253,6 +253,23 @@ span {
 
 .modal-button {
   font-size: 20pt;
+}
+
+.edit-modal-center-content-item {
+  font-size: 20pt;
+  font-weight: bold;
+}
+
+.edit-modal-center-content {
+  display: grid;
+  grid-template-columns: auto auto;
+  row-gap: 10px;
+  width: 500px;
+}
+
+.edit-modal-center-content input {
+  font-size: 30px;
+  width: 300px;
 }
 
 #title-prompt {
