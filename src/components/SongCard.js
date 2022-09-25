@@ -75,6 +75,11 @@ export default class SongCard extends React.Component {
         this.props.changeEditIndex(this.getItemNum() - 1);
     }
 
+    handleClick = (onclick) => {
+        onclick.preventDefault();
+        this.props.deleteSongIndex(this.getItemNum() - 1);
+    }
+
     getItemNum = () => {
         return this.props.id.substring("playlist-song-".length);
     }
@@ -107,7 +112,7 @@ export default class SongCard extends React.Component {
             >
                 <span style = {{paddingRight : "5px"}}>{num + "."}</span>
                 <a href = {youTubeLink}>{song.title} by {song.artist}</a>
-                <input className="list-card-button" type="button" value="X"></input>
+                <input className="list-card-button" type="button" value="X" onClick={this.handleClick}></input>
             </div>
         )
     }

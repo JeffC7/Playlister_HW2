@@ -7,9 +7,11 @@ import jsTPS from './common/jsTPS.js';
 
 // OUR TRANSACTIONS
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
+import EditSong_Transaction from './transactions/EditSong_Transaction.js';
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.js';
+import EditSongModal from './components/EditSongModal.js';
 
 // THESE REACT COMPONENTS ARE IN OUR UI
 import Banner from './components/Banner.js';
@@ -18,8 +20,10 @@ import PlaylistCards from './components/PlaylistCards.js';
 import SidebarHeading from './components/SidebarHeading.js';
 import SidebarList from './components/SidebarList.js';
 import Statusbar from './components/Statusbar.js';
-import EditSong_Transaction from './transactions/EditSong_Transaction';
-import EditSongModal from './components/EditSongModal';
+import DeleteSongModal from './components/DeleteSongModal';
+import DeleteSong_Transaction from './transactions/DeleteSong_Transaction';
+import AddSong_Transaction from './transactions/AddSong_Transaction';
+
 
 class App extends React.Component {
     constructor(props) {
@@ -40,6 +44,7 @@ class App extends React.Component {
             currentList : null,
             sessionData : loadedSessionData,
             editIndex: null,
+            deleteIndex: null,
         }
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
@@ -289,8 +294,23 @@ class App extends React.Component {
         this.setState(prevState => ({...prevState, editIndex: null}));
     }
 
+    showDeleteSongModal() {
+        let modal = document.getElementById("delete-song-modal");
+        modal.classList.add("is-visible");
+    }
+
+    hideDeleteSongModal = () => {
+        let modal = document.getElementById("delete-song-modal");
+        modal.classList.remove("is-visible");
+        this.setState(prevState => ({...prevState, deleteIndex: null}));
+    }
+
     editIndexCallBack = (index) => {
         this.setState(prevState => ({...prevState, editIndex: index}));
+    }
+
+    deleteIndexCallBack = (index) => {
+        this.setState(prevState => ({...prevState, deleteIndex: index}));
     }
 
     editSong = (newSong, index) => {
@@ -304,6 +324,44 @@ class App extends React.Component {
         let transaction = new EditSong_Transaction(this, oldSong, newSong, this.state.editIndex);
         this.tps.addTransaction(transaction);
         this.hideEditSongModal();
+    }
+
+    deleteSong = (index) => {
+        let list = this.state.currentList;
+        list.songs.splice(index, 1);
+        this.setStateWithUpdatedList(list);
+    }
+
+    addDeleteSong = (index, song) => {
+        let list = this.state.currentList;
+        list.songs.splice(index, 0, song);
+        this.setStateWithUpdatedList(list);
+    }
+
+    addDeleteSongTransaction = () => {
+        let song = this.state.currentList.songs[this.state.deleteIndex];
+        let transaction = new DeleteSong_Transaction(this, song, this.state.deleteIndex);
+        this.tps.addTransaction(transaction);
+        this.hideDeleteSongModal();
+        
+    }
+
+    addSong = () => {
+        let rickRoll = {title: "Untitled", artist: "Unknown", youTubeId: "dQw4w9WgXcQ"};
+        let list = this.state.currentList;
+        list.songs.push(rickRoll);
+        this.setStateWithUpdatedList(list)
+    }
+
+    removeSong = () => {
+        let list = this.state.currentList;
+        list.songs.pop();
+        this.setStateWithUpdatedList(list);
+    }
+
+    addSongTransaction = () => {
+        let transaction = new AddSong_Transaction(this);
+        this.tps.addTransaction(transaction);
     }
 
     render() {
@@ -333,11 +391,14 @@ class App extends React.Component {
                     undoCallback={this.undo}
                     redoCallback={this.redo}
                     closeCallback={this.closeCurrentList}
+                    addSongCallBack={this.addSongTransaction}
                 />
                 <PlaylistCards
                     currentList={this.state.currentList}
                     moveSongCallback={this.addMoveSongTransaction}
-                    changeEditIndex={this.editIndexCallBack} />
+                    changeEditIndex={this.editIndexCallBack} 
+                    deleteSongIndex={this.deleteIndexCallBack}
+                />
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteListModal
@@ -350,6 +411,11 @@ class App extends React.Component {
                     index={this.state.editIndex}
                     song={this.state.editIndex === null ? null : this.state.currentList.songs[this.state.editIndex]}
                     hide={this.hideEditSongModal}
+                />
+                <DeleteSongModal
+                    addDeleteSongTransaction={this.addDeleteSongTransaction}
+                    song={this.state.deleteIndex === null ? null : this.state.currentList.songs[this.state.deleteIndex]}
+                    hide2={this.hideDeleteSongModal}
                 />
             </div>
         );

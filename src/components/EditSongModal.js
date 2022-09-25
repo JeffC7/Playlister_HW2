@@ -33,7 +33,7 @@ export default class EditSongModal extends Component {
         if (this.props.index !== null) {
             className += " is-visible";
         }
-        console.log(className);
+        // console.log(className);
         return (
             <div class={className} id="edit-song-modal" data-animation="slideInOutLeft">
             <div class="modal-root" id='edit-song-root'>
