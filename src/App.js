@@ -364,13 +364,23 @@ class App extends React.Component {
         this.tps.addTransaction(transaction);
     }
 
+    handleOnKeyDown = (event) => {
+        if (event.ctrlKey) {
+            if (event.key === 'z') {
+                this.undo();
+            } else if (event.key ===  'y') {
+                this.redo();
+            }
+        }
+    }
+
     render() {
         let canAddSong = this.state.currentList !== null;
         let canUndo = this.tps.hasTransactionToUndo();
         let canRedo = this.tps.hasTransactionToRedo();
         let canClose = this.state.currentList !== null;
         return (
-            <div id="root">
+            <div id="root" onKeyDown={event => this.handleOnKeyDown(event)}>
                 <link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet'></link>
                 <Banner />
                 <SidebarHeading
