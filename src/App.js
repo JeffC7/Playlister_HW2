@@ -375,16 +375,18 @@ class App extends React.Component {
     }
 
     render() {
-        let canAddSong = this.state.currentList !== null;
-        let canUndo = this.tps.hasTransactionToUndo();
-        let canRedo = this.tps.hasTransactionToRedo();
-        let canClose = this.state.currentList !== null;
+        let canAddList = this.state.currentList === null;
+        let canAddSong = this.state.currentList !== null && this.state.editIndex === null && this.state.deleteIndex === null;
+        let canUndo = this.tps.hasTransactionToUndo() && this.state.editIndex === null && this.state.deleteIndex === null;
+        let canRedo = this.tps.hasTransactionToRedo() && this.state.editIndex === null && this.state.deleteIndex === null;
+        let canClose = this.state.currentList !== null && this.state.editIndex === null && this.state.deleteIndex === null;
         return (
             <div id="root" onKeyDown={event => this.handleOnKeyDown(event)}>
                 <link href='https://fonts.googleapis.com/css?family=Tangerine' rel='stylesheet'></link>
                 <Banner />
                 <SidebarHeading
                     createNewListCallback={this.createNewList}
+                    canAddList={canAddList}
                 />
                 <SidebarList
                     currentList={this.state.currentList}
